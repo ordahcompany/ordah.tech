@@ -186,12 +186,42 @@ if ('IntersectionObserver' in window) {
 })();
 
 /* ---------- 8. CONTACT FORM (front-end only: connect to your backend/email service later) ---------- */
+// ---- EmailJS config (get these from your EmailJS dashboard) ----
+const EMAILJS_PUBLIC_KEY  = 'PJAcqshTxB0rUlVKf';   // Account > General
+const EMAILJS_SERVICE_ID  = 'service_bp35e97';   // Email Services
+const EMAILJS_TEMPLATE_ID = 'service_bp35e97';  // Email Templates
+
+emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
 const form = $('#contact-form'), note = $('#form-note');
-form.addEventListener('submit', e => {
+const submitBtn = form.querySelector('button[type="submit"]');
+
+form.addEventListener('submit', async e => {
   e.preventDefault();
+
   const bad = $$('input, textarea', form).find(f => !f.checkValidity());
-  if (bad) { note.textContent = 'Please complete every field with a valid email.'; bad.focus(); return; }
-  note.textContent = "Thank you! We'll be in touch shortly.";
-  form.reset();
-  setTimeout(() => note.textContent = '', 6000);
+  if (bad) {
+    note.textContent = 'Please complete every field with a valid email.';
+    bad.focus();
+    return;
+  }
+
+  // Prevent double submits while sending
+  const originalLabel = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  note.textContent = '';
+
+  try {
+    await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form);
+    note.textContent = "Thank you! We'll be in touch shortly.";
+    form.reset();
+  } catch (err) {
+    console.error('EmailJS error:', err);
+    note.textContent = 'Sorry, something went wrong. Please try again in a moment.';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+    setTimeout(() => note.textContent = '', 6000);
+  }
 });
