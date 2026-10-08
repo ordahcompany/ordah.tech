@@ -189,7 +189,7 @@ if ('IntersectionObserver' in window) {
 // ---- EmailJS config (get these from your EmailJS dashboard) ----
 const EMAILJS_PUBLIC_KEY  = 'PJAcqshTxB0rUlVKf';   // Account > General
 const EMAILJS_SERVICE_ID  = 'service_bp35e97';   // Email Services
-const EMAILJS_TEMPLATE_ID = 'service_bp35e97';  // Email Templates
+const EMAILJS_TEMPLATE_ID = 'template_yo8qott';  // Email Templates
 
 emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
